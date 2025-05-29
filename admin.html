@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Login - Deepali Jewellers</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { text-align: center; color: #b35c00; }
+        label { display: block; margin: 10px 0 5px; }
+        input, button { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background: #b35c00; color: white; border: none; cursor: pointer; }
+        button:hover { background: #944b00; }
+        #metalRateSection { margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Login</h1>
+        <div id="loginSection">
+            <label>मोबाइल नंबर:</label>
+            <input type="text" id="adminMobile" placeholder="मोबाइल नंबर दर्ज करें" />
+            <label>पासवर्ड:</label>
+            <input type="password" id="adminPassword" placeholder="पासवर्ड दर्ज करें" />
+            <button onclick="adminLogin()">लॉगिन करें</button>
+            <p id="loginMessage" style="color:red;"></p>
+        </div>
+
+        <div id="metalRateSection" class="hidden">
+            <h2>Metal Rate अपडेट करें</h2>
+            <label>Gold (सुनहरा) ₹/ग्राम:</label>
+            <input type="number" id="goldRate" placeholder="Gold Rate दर्ज करें" />
+            <label>Silver (चांदी) ₹/ग्राम:</label>
+            <input type="number" id="silverRate" placeholder="Silver Rate दर्ज करें" />
+            <button onclick="saveRates()">सेव करें</button>
+            <button onclick="logout()">लॉगआउट</button>
+
+            <div id="metalRatesDisplay" style="margin-top: 20px;">
+                <h3>मौजूदा रेट्स:</h3>
+                <p>Gold: ₹<span id="showGoldRate">-</span> / ग्राम</p>
+                <p>Silver: ₹<span id="showSilverRate">-</span> / ग्राम</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_MOBILE = "9713321930";
+        const ADMIN_PASSWORD = "1234"; // इसे अपनी मर्जी से बदल सकते हैं
+
+        const GOLD_RATE_KEY = "goldRate";
+        const SILVER_RATE_KEY = "silverRate";
+
+        function adminLogin() {
+            const mobile = document.getElementById("adminMobile").value;
+            const password = document.getElementById("adminPassword").value;
+            const message = document.getElementById("loginMessage");
+
+            if (mobile === ADMIN_MOBILE && password === ADMIN_PASSWORD) {
+                message.textContent = "";
+                document.getElementById("loginSection").classList.add("hidden");
+                document.getElementById("metalRateSection").classList.remove("hidden");
+                loadRates();
+            } else {
+                message.textContent = "गलत मोबाइल नंबर या पासवर्ड";
+            }
+        }
+
+        function saveRates() {
+            const gold = document.getElementById("goldRate").value;
+            const silver = document.getElementById("silverRate").value;
+
+            if (gold === "" || silver === "") {
+                alert("कृपया दोनों रेट्स दर्ज करें।");
+                return;
+            }
+
+            localStorage.setItem(GOLD_RATE_KEY, gold);
+            localStorage.setItem(SILVER_RATE_KEY, silver);
+            alert("रेट्स सफलतापूर्वक सेव हो गए।");
+            loadRates();
+        }
+
+        function loadRates() {
+            const gold = localStorage.getItem(GOLD_RATE_KEY) || "-";
+            const silver = localStorage.getItem(SILVER_RATE_KEY) || "-";
+
+            document.getElementById("showGoldRate").textContent = gold;
+            document.getElementById("showSilverRate").textContent = silver;
+
+            document.getElementById("goldRate").value = gold === "-" ? "" : gold;
+            document.getElementById("silverRate").value = silver === "-" ? "" : silver;
+        }
+
+        function logout() {
+            document.getElementById("metalRateSection").classList.add("hidden");
+            document.getElementById("loginSection").classList.remove("hidden");
+            document.getElementById("adminMobile").value = "";
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("loginMessage").textContent = "";
+        }
+    </script>
+</body>
+</html>
